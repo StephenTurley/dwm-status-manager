@@ -14,7 +14,7 @@ defmodule DwmStatusManager.Core.StatusTest do
   test "no components yeilds no status" do
     assert build_status([])
            |> Status.update_values(&processor/1)
-           |> Status.to_string() == ""
+           |> Map.get(:message) == ""
   end
 
   test "it builds a single component" do
@@ -23,9 +23,8 @@ defmodule DwmStatusManager.Core.StatusTest do
     result =
       build_status([component])
       |> Status.update_values(&processor/1)
-      |> Status.to_string()
 
-    assert result == "flerpn 500"
+    assert result.message == "flerpn 500"
   end
 
   test "it builds multiple components" do
@@ -38,7 +37,7 @@ defmodule DwmStatusManager.Core.StatusTest do
     result =
       build_status(components)
       |> Status.update_values(&processor/1)
-      |> Status.to_string()
+      |> Map.get(:message)
 
     assert result == "flerpn 500|derpn 10000|herpn 1000"
   end
@@ -57,7 +56,7 @@ defmodule DwmStatusManager.Core.StatusTest do
       build_status(components)
       |> Status.update_values(initial)
       |> Status.update_value(1, updated)
-      |> Status.to_string()
+      |> Map.get(:message)
 
     assert result == "not updated|Updated!|not updated"
   end
