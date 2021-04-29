@@ -8,11 +8,13 @@ defmodule DwmStatusManager.Core.StatusTest do
   end
 
   defp build_status(components) do
-    Status.new(delimiter: "|", components: components, processor: &processor/1)
+    Status.new(delimiter: "|", components: components)
   end
 
   test "no components yeilds no status" do
-    assert build_status([]) |> Status.to_string() == ""
+    assert build_status([])
+           |> Status.update_values(&processor/1)
+           |> Status.to_string() == ""
   end
 
   test "it builds a single component" do
@@ -20,6 +22,7 @@ defmodule DwmStatusManager.Core.StatusTest do
 
     result =
       build_status([component])
+      |> Status.update_values(&processor/1)
       |> Status.to_string()
 
     assert result == "flerpn 500"
@@ -34,8 +37,28 @@ defmodule DwmStatusManager.Core.StatusTest do
 
     result =
       build_status(components)
+      |> Status.update_values(&processor/1)
       |> Status.to_string()
 
     assert result == "flerpn 500|derpn 10000|herpn 1000"
+  end
+
+  test "it can update individual components" do
+    initial = fn _component -> "not updated" end
+    updated = fn _component -> "Updated!" end
+
+    components = [
+      Component.new(command: "flerpn", interval: 500),
+      Component.new(command: "derpn", interval: 10_000),
+      Component.new(command: "herpn", interval: 1_000)
+    ]
+
+    result =
+      build_status(components)
+      |> Status.update_values(initial)
+      |> Status.update_value(1, updated)
+      |> Status.to_string()
+
+    assert result == "not updated|Updated!|not updated"
   end
 end
