@@ -1,18 +1,12 @@
 defmodule DwmStatusManager do
-  @moduledoc """
-  Documentation for `DwmStatusManager`.
-  """
+  alias DwmStatusManager.Boundary.StatusServer
+  alias DwmStatusManager.Config
 
-  @doc """
-  Hello world.
+  def start() do
+    GenServer.start_link(StatusServer, Config.status(), name: StatusServer)
+  end
 
-  ## Examples
-
-      iex> DwmStatusManager.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def update_component(index) do
+    StatusServer.update_value(StatusServer, index)
   end
 end

@@ -1,4 +1,4 @@
-defmodule DwmStatusManager.Boundary.StatusManager do
+defmodule DwmStatusManager.Boundary.StatusServer do
   alias DwmStatusManager.Core.Status
   use GenServer
 
@@ -11,13 +11,17 @@ defmodule DwmStatusManager.Boundary.StatusManager do
     {:ok, new_status}
   end
 
+  def update_value(manager \\ __MODULE__, index) do
+    GenServer.call(manager, {:update_value, index})
+  end
+
   def handle_call({:update_value, index}, _from, status) do
     new_status =
       status
       |> Status.update_value(index, &process_component/1)
       |> send_status()
 
-    {:reply, index, new_status}
+    {:reply, :ok, new_status}
   end
 
   defp send_status(status) do
