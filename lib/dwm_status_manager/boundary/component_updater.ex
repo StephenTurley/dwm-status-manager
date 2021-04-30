@@ -8,6 +8,7 @@ defmodule DwmStatusManager.Boundary.ComponentUpdater do
 
   def handle_info(:update, {index, interval}) do
     DwmStatusManager.update_component(index)
+    schedule_update(interval)
     {:noreply, {index, interval}}
   end
 
