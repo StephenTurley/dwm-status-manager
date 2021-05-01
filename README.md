@@ -2,6 +2,12 @@
 
 A status manager for dwm built with elixir and inspired by [dwmblocks](https://github.com/torrinfail/dwmblocks)
 
+The status bar is composed of `components` that are seperated by a `delimiter`. 
+
+Each component runs in it's own process and will execute a `command` every `interval` ms.
+
+The command should be an executable on the `PATH` that returns the string status and a 0 exit code when successful.
+
 ## Installation
 
 ```
@@ -11,12 +17,6 @@ asdf install
 ```
 
 ## Configuration
-
-The status bar is composed of `components` that are seperated by a `delimiter`. 
-
-Each component has a `command` that is executed every `interval` in ms.
-
-The command should be an executable on the `PATH` that returns the string status and a 0 exit code when successful.
 
 modify the `config.ex` file:
 
